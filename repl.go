@@ -8,6 +8,7 @@ import (
 )
 
 func startRepl() {
+
 	reader := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")
@@ -19,9 +20,19 @@ func startRepl() {
 			continue
 		}
 		command := userInputs[0]
-		fmt.Printf("Your command was: %s\n", command)
+
+		cmd, exists := getCommands()[command]
+		if !exists {
+			fmt.Println("unknown command")
+		} else {
+			if err := cmd.callback(); err != nil {
+				fmt.Println(err)
+			}
+		}
+
 	}
 }
+
 func cleanInput(text string) []string {
 	output := strings.ToLower(text)
 	words := strings.Fields(output)
