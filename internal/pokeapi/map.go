@@ -13,6 +13,16 @@ func (c *Client) GetLocationAreas(pageUrl *string) (AreaStruct, error) {
 		url = *pageUrl
 	}
 
+	val, ok := c.cache.Get(url)
+	if ok {
+		Area := AreaStruct{}
+		err := json.Unmarshal(val, &Area)
+		if err != nil {
+			return AreaStruct{}, nil
+		}
+		return Area, nil
+	}
+
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		log.Fatal(err)
@@ -40,6 +50,8 @@ func (c *Client) GetLocationAreas(pageUrl *string) (AreaStruct, error) {
 		log.Fatal("Cant parse json to struct")
 		return AreaStruct{}, err
 	}
+
+	c.cache.Add(url, body)
 
 	return Area, nil
 }
