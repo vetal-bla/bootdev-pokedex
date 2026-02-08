@@ -7,35 +7,34 @@ import (
 	"net/http"
 )
 
-type AreaStruct struct {
-	Count    int    `json:"count"`
-	Next     string `json:"next"`
-	Previous string `json:"previous"`
-	Results  []struct {
-		Name string `json:"name"`
-		URL  string `json:"url"`
-	} `json:"results"`
-}
+func (c *Client) GetLocationAreas(pageUrl *string) (AreaStruct, error) {
+	url := baseURL + "/location-area"
+	if pageUrl != nil {
+		url = *pageUrl
+	}
 
-func GetLocationAreas(url string) (AreaStruct, error) {
-	res, err := http.Get(url)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		log.Fatal(err)
 		return AreaStruct{}, err
 	}
-	body, err := io.ReadAll(res.Body)
+	res, err := c.httpClient.Do(req)
+	if err != nil {
+		return AreaStruct{}, err
+	}
+
 	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return AreaStruct{}, err
+	}
 
 	if res.StatusCode > 299 {
 		log.Fatalf("Responce not ok: %d", res.StatusCode)
 	}
 
-	if err != nil {
-		log.Fatal(err)
-		return AreaStruct{}, err
-	}
-
-	var Area AreaStruct
+	Area := AreaStruct{}
 
 	if err := json.Unmarshal(body, &Area); err != nil {
 		log.Fatal("Cant parse json to struct")
