@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func mapNames(c *config) error {
+func mapNames(c *config, args ...string) error {
 	mapAreas, err := c.pokeApiClient.GetLocationAreas(c.nextUrl)
 	if err != nil {
 		return err
@@ -20,7 +20,7 @@ func mapNames(c *config) error {
 	return nil
 }
 
-func mapbNames(c *config) error {
+func mapbNames(c *config, args ...string) error {
 	if c.previousUrl == nil {
 		return errors.New("you're on first page")
 	}

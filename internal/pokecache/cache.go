@@ -1,7 +1,6 @@
 package pokecache
 
 import (
-	"fmt"
 	"sync"
 	"time"
 )
@@ -33,7 +32,7 @@ func (cache *Cache) Add(key string, val []byte) {
 		val:       val,
 	}
 	cache.mu.Unlock()
-	fmt.Println("ADDED CACHE")
+	// fmt.Println("ADDED CACHE")
 }
 
 func (cache *Cache) Get(key string) (val []byte, isFound bool) {
@@ -45,7 +44,7 @@ func (cache *Cache) Get(key string) (val []byte, isFound bool) {
 		return v, false
 	}
 	cache.mu.Unlock()
-	fmt.Println("FROM CACHE")
+	// fmt.Println("FROM CACHE")
 	return elem.val, true
 }
 
